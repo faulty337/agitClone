@@ -23,4 +23,18 @@ public class Comment extends TimeStamped {
     @Column(nullable = false)
     private String content;
 
+    public Comment(String content){
+
+        this.content = content;
+
+    }
+
+    public void update(String content){
+
+        this.content = content;
+    }
+
+
 }
+
+
