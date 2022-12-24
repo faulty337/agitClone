@@ -3,6 +3,7 @@ package com.hanghae99.agitclone.post.entity;
 import com.hanghae99.agitclone.comment.entity.Comment;
 import com.hanghae99.agitclone.common.TimeStamped;
 import com.hanghae99.agitclone.user.entity.Users;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,7 +25,7 @@ public class Post extends TimeStamped {
     @JoinColumn(name = "userId")
     private Users user;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 65000)
     private String content;
 
     private boolean isModified;
@@ -40,5 +41,14 @@ public class Post extends TimeStamped {
     @OneToMany
     @JoinColumn(name = "postId")
     private List<Comment> commentList = new ArrayList<>();
+
+    @Builder
+    public Post(String content, Users users, boolean isModified, long likeCount, long hateCount){
+        this.content = content;
+        this.user = users;
+        this.isModified = isModified;
+        this.likeCount = likeCount;
+        this.hateCount = hateCount;
+    }
 
 }
