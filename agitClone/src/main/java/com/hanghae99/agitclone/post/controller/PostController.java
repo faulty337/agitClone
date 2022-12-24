@@ -27,8 +27,8 @@ public class PostController {
 
     //게시글 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto, userDetails.getUsers());
+    public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody RequestPostDto requestPostDto){
+        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto);
         ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("수정 완료", 200, responsePostDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
