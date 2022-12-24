@@ -17,6 +17,7 @@ public enum ErrorCode {
     WRONG_IMAGE_FORMAT("파일을 확인해주세요.", 400),
 
     //404 NOT_FOUND 잘못된 리소스 접근
+    Agit_NOT_FOUND("존재하지 않는 아지트 입니다.",404),
     CONTENT_NOT_FOUND("존재하지 않는 게시글 입니다.",404),
     COMMENT_NOT_FOUND("존재하지 않는 댓글 입니다.", 404),
     USERNAME_NOT_FOUND("존재하지 않는 아이디 입니다.",404),

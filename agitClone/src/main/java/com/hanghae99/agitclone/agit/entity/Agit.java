@@ -29,4 +29,9 @@ public class Agit {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "agitId")
     private List<Post> PostList = new ArrayList<>();
+
+    public void addPostList(Post post) {
+        this.PostList.add(post);
+    }
+
 }

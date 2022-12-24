@@ -34,6 +34,8 @@ public class Post extends TimeStamped {
 
     private long hateCount;
 
+    private long agitId;
+
     @OneToMany
     @JoinColumn(name = "postId")
     private List<PostLike> PostLikeList = new ArrayList<>();

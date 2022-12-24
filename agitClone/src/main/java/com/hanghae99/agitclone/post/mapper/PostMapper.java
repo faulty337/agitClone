@@ -6,19 +6,18 @@ import com.hanghae99.agitclone.post.entity.Post;
 import com.hanghae99.agitclone.user.entity.Users;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Member;
-
 @Component
 public class PostMapper {
 
     //Dto -> Entity -> 받은 정보로 Post 만들어주기.
-    public Post toEntity(RequestPostDto requestPostDto, Users users) {
+    public Post toEntity(RequestPostDto requestPostDto, Users users, long agitId) {
         return Post.builder()
                 .content(requestPostDto.getContent())
                 .users(users)
                 .isModified(false)
                 .likeCount(0)
                 .hateCount(0)
+                .agitId(agitId)
                 .build();
     }
 

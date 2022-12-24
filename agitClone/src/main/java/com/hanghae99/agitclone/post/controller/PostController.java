@@ -12,24 +12,32 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/agit")
 public class PostController {
     private final PostService postService;
 
     //게시글 등록
     //유저 정보 수정 필요
-    @PostMapping("")
-    public ResponseEntity<ResponseMessage> createPost(@RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.createPost(requestPostDto, userDetails.getUsers);
+    @PostMapping("/agit/{agitId}/post")
+    public ResponseEntity<ResponseMessage> createPost(@PathVariable Long agitId, @RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        ResponsePostDto responsePostDto = postService.createPost(agitId, requestPostDto, userDetails.getUsers());
         ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("생성 성공", 200, responsePostDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
 
     //게시글 수정
-    @PutMapping("/{postId}")
-    public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto, userDetails.getUsers);
+    @PutMapping("/agit/post/{postId}")
+    public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody RequestPostDto requestPostDto){
+        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto);
         ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("수정 완료", 200, responsePostDto);
+        return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
+    }
+
+    //게시글 삭제
+    @DeleteMapping("/agit/post/{postId}")
+    public ResponseEntity<ResponseMessage> deletePost(@PathVariable Long postId){
+        postService.deletePost(postId);
+        ResponseMessage<?> responseMessage = new ResponseMessage("삭제 완료", 200, null);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
 
