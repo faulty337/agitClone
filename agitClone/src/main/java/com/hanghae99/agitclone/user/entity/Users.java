@@ -1,5 +1,6 @@
 package com.hanghae99.agitclone.user.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,11 @@ public class Users {
 
     @Column(nullable = false)
     private String password;
+
+    @Builder
+    public Users(String username, String nickname, String password){
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+    }
 }
