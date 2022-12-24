@@ -51,4 +51,8 @@ public class Post extends TimeStamped {
         this.hateCount = hateCount;
     }
 
+    public void update(String content){
+        this.content = content;
+    }
+
 }
