@@ -17,6 +17,7 @@ public enum ErrorCode {
     WRONG_IMAGE_FORMAT("파일을 확인해주세요.", 400),
 
     //404 NOT_FOUND 잘못된 리소스 접근
+    AGIT_NOT_FOUND("존재하지 않는 아지트 입니다.",404),
     CONTENT_NOT_FOUND("존재하지 않는 게시글 입니다.",404),
     COMMENT_NOT_FOUND("존재하지 않는 댓글 입니다.", 404),
     USERNAME_NOT_FOUND("존재하지 않는 아이디 입니다.",404),
@@ -24,6 +25,7 @@ public enum ErrorCode {
     AUTHORIZATION_DELETE_FAIL("삭제 권한이 없습니다.", 401),
     AUTHORIZATION_UPDATE_FAIL("수정 권한이 없습니다.", 401),
     AUTHORIZATION_CREATE_FAIL("생성 권한이 없습니다.", 401),
+    AUTHORIZATION_AGIT_FAIL("아지트 권한이 없습니다.", 401),
 
     INTERNAL_SERVER_ERROR("서버 에러입니다. 서버 팀에 연락주세요!", 500);
 

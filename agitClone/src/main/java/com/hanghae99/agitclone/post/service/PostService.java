@@ -1,5 +1,7 @@
 package com.hanghae99.agitclone.post.service;
 
+import com.hanghae99.agitclone.agit.entity.Agit;
+import com.hanghae99.agitclone.agit.repository.AgitRepository;
 import com.hanghae99.agitclone.common.exception.CustomException;
 import com.hanghae99.agitclone.common.exception.ErrorCode;
 import com.hanghae99.agitclone.post.dto.RequestPostDto;
@@ -12,12 +14,33 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
+    private final AgitRepository agitRepository;
     private final PostMapper postMapper;
+
+    public List<ResponsePostDto> getPostList(Long agitId, Users users) {
+        Agit agit = agitRepository.findById(agitId).orElseThrow(
+                ()->new CustomException(ErrorCode.AGIT_NOT_FOUND)
+        );
+        if(agit.getAgitMemberList().stream().noneMatch(agitMember -> agitMember.getUserId().equals(users.getId()))){
+            throw new CustomException(ErrorCode.AUTHORIZATION_AGIT_FAIL);
+        }
+
+        List<ResponsePostDto> postDtoList = new ArrayList<>();
+        List<Post> postList = agit.getPostList();
+
+        for(Post post : postList){
+            postDtoList.add(postMapper.toResponsePostDto(post, users));
+        }
+        return postDtoList;
+    }
 
     //게시글 등록
     @Transactional

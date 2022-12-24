@@ -4,11 +4,14 @@ import com.hanghae99.agitclone.common.ResponseMessage;
 import com.hanghae99.agitclone.post.dto.RequestPostDto;
 import com.hanghae99.agitclone.post.dto.ResponsePostDto;
 import com.hanghae99.agitclone.post.service.PostService;
+import com.hanghae99.agitclone.user.entity.Users;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,9 +22,21 @@ public class PostController {
     //게시글 등록
     //유저 정보 수정 필요
     @PostMapping("")
-    public ResponseEntity<ResponseMessage> createPost(@RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.createPost(requestPostDto, userDetails.getUsers());
+    public ResponseEntity<ResponseMessage> createPost(@RequestBody RequestPostDto postRequestDto/*, @AuthenticationPrincipal UserDetailsImpl userDetails*/){
+        Users users = new Users();
+        ResponsePostDto responsePostDto = postService.createPost(postRequestDto, users);
         ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("생성 성공", 200, responsePostDto);
+        return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
+    }
+
+
+
+    @GetMapping("/agit/{agitId}")
+    public ResponseEntity<ResponseMessage> getPost(@PathVariable Long agitId){
+        Users users = new Users();
+        List<ResponsePostDto> responsePostDtoList = postService.getPostList(agitId, users);
+        ResponseMessage<List<ResponsePostDto>> responseMessage = new ResponseMessage<>("Success", 200, responsePostDtoList);
+
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
 

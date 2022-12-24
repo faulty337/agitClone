@@ -28,6 +28,7 @@ public class Post extends TimeStamped {
     @Column(nullable = false, length = 65000)
     private String content;
 
+    private Long agitId;
     private boolean isModified;
 
     private long likeCount;
