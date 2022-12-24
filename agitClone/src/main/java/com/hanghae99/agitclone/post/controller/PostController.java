@@ -20,7 +20,7 @@ public class PostController {
     //유저 정보 수정 필요
     @PostMapping("")
     public ResponseEntity<ResponseMessage> createPost(@RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.createPost(requestPostDto, userDetails.getUsers);
+        ResponsePostDto responsePostDto = postService.createPost(requestPostDto, userDetails.getUsers());
         ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("생성 성공", 200, responsePostDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
@@ -28,7 +28,7 @@ public class PostController {
     //게시글 수정
     @PutMapping("/{postId}")
     public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto, userDetails.getUsers);
+        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto, userDetails.getUsers());
         ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("수정 완료", 200, responsePostDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
