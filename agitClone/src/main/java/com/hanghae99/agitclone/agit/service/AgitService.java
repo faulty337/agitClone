@@ -2,17 +2,25 @@ package com.hanghae99.agitclone.agit.service;
 
 import com.hanghae99.agitclone.agit.dto.AgitInviteRequestDto;
 import com.hanghae99.agitclone.agit.dto.AgitRequestDto;
+import com.hanghae99.agitclone.agit.dto.AgitResponseDto;
 import com.hanghae99.agitclone.agit.entity.Agit;
 import com.hanghae99.agitclone.agit.entity.AgitMember;
 import com.hanghae99.agitclone.agit.mapper.AgitMapper;
 import com.hanghae99.agitclone.agit.repository.AgitMemberRepository;
 import com.hanghae99.agitclone.agit.repository.AgitRepository;
+import com.hanghae99.agitclone.comment.entity.Comment;
 import com.hanghae99.agitclone.common.exception.CustomException;
+import com.hanghae99.agitclone.common.exception.ErrorCode;
+import com.hanghae99.agitclone.post.dto.ResponsePostDto;
+import com.hanghae99.agitclone.post.entity.Post;
 import com.hanghae99.agitclone.user.entity.Users;
 import com.hanghae99.agitclone.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.hanghae99.agitclone.common.exception.ErrorCode.*;
 
@@ -54,4 +62,31 @@ public class AgitService {
         agitMemberRepository.save(agitMapper.toEntity(userId, agitId));
 
     }
+
+    @Transactional
+    public List<AgitResponseDto> getAgitList(Long userId) {
+
+        //해당 userId가 들어간 모든 아지트를 검색해서 리스트에 넣어야된다.
+        //userId로 agitMemberRepository에 접근해서 해당 유저가 가입한 아지트 정보 조회
+        List<AgitMember> agitMemberList = agitMemberRepository.findAllByUserId(userId);
+        List<Long> agitIdList = new ArrayList<>();
+        for(AgitMember agitMember : agitMemberList){
+            agitIdList.add(agitMember.getAgitId());
+        }
+
+        //가지고 나온 agitId를 사용해서 find해서 반환한다.
+        List<Agit> agitList = new ArrayList<>();
+        for(Long agitId : agitIdList){
+            agitList.add(agitRepository.findById(agitId).get());
+        }
+
+        //List<Agit> agitList = agitMemberRepository.findAllByUserId(userId);
+        List<AgitResponseDto> agitResponseDtos = new ArrayList<>();
+
+        for(Agit agit : agitList){
+            agitResponseDtos.add(agitMapper.toAgitResponseDto(agit));
+        }
+        return agitResponseDtos;
+    }
+
 }

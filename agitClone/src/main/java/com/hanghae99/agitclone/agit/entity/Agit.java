@@ -22,11 +22,12 @@ public class Agit {
     @Column(nullable = false)
     private String agitName;
 
+    @Column(nullable = false)
+    private String agitInfo;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "agitId")
     private List<AgitMember> agitMemberList = new ArrayList<>();
-
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "agitId")
@@ -36,8 +37,9 @@ public class Agit {
         this.PostList.add(post);
     }
     @Builder
-    public Agit(String agitName){
+    public Agit(String agitName, String agitInfo){
         this.agitName = agitName;
+        this.agitInfo = agitInfo;
     }
 
 }

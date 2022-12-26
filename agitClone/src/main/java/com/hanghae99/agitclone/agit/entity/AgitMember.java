@@ -18,6 +18,7 @@ public class AgitMember {
     @Column(nullable = false)
     private Long userId;
 
+    @Column(nullable = false)
     private Long agitId;
 
     @Builder
