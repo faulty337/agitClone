@@ -44,8 +44,7 @@ public class PostMapper {
                 .commentList(post.getCommentList().stream().map(comment -> commentMapper.toResponse(comment)).collect(Collectors.toList()))
                 .build();
     }
-    public ResponsePostDto toResponsePostDto(Post post, Users users){
-        Long userId = users.getId();
+    public ResponsePostDto toResponsePostDto(Post post, Long userId){
         PostLike postLike = post.getPostLikeList().stream().filter(temp -> temp.getUserId().equals(userId)).findFirst().orElse(null);
         Boolean like = postLike == null ? null : !postLike.isHate();
         return ResponsePostDto.builder()

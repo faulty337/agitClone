@@ -33,11 +33,11 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
 
-    public List<ResponsePostDto> getPostList(Long agitId, Users users) {
+    public List<ResponsePostDto> getPostList(Long agitId, Long userId) {
         Agit agit = agitRepository.findById(agitId).orElseThrow(
                 ()->new CustomException(ErrorCode.AGIT_NOT_FOUND)
         );
-        if(agit.getAgitMemberList().stream().noneMatch(agitMember -> agitMember.getUserId().equals(users.getId()))){
+        if(agit.getAgitMemberList().stream().noneMatch(agitMember -> agitMember.getUserId().equals(userId))){
             throw new CustomException(ErrorCode.AUTHORIZATION_AGIT_FAIL);
         }
 
@@ -45,7 +45,7 @@ public class PostService {
         List<Post> postList = agit.getPostList();
 
         for(Post post : postList){
-            postDtoList.add(postMapper.toResponsePostDto(post, users));
+            postDtoList.add(postMapper.toResponsePostDto(post, userId));
         }
         return postDtoList;
     }

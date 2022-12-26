@@ -34,8 +34,8 @@ public class PostController {
 
     @GetMapping("/agit/{agitId}")
     public ResponseEntity<ResponseMessage> getPost(@PathVariable Long agitId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        Users users = userDetails.getUser();
-        List<ResponsePostDto> responsePostDtoList = postService.getPostList(agitId, users);
+        Long userId = userDetails.getUserId();
+        List<ResponsePostDto> responsePostDtoList = postService.getPostList(agitId, userId);
         ResponseMessage<List<ResponsePostDto>> responseMessage = new ResponseMessage<>("Success", 200, responsePostDtoList);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
