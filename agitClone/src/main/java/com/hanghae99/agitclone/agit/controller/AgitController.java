@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class AgitController {
@@ -35,6 +37,14 @@ public class AgitController {
     public ResponseEntity<ResponseMessage> inviteAgit(@PathVariable Long agitId, @RequestBody AgitInviteRequestDto agitInviteRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         agitService.inviteAgit(agitId, agitInviteRequestDto, userDetails.getUserId());
         ResponseMessage<?> responseMessage = new ResponseMessage("Success", 200, null);
+        return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
+    }
+
+    @GetMapping("/agit")
+    public ResponseEntity<ResponseMessage> getAgit(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        Long userId = userDetails.getUserId();
+        List<AgitResponseDto> AgitResponseDto = agitService.getAgitList(userId);
+        ResponseMessage<List<AgitResponseDto>> responseMessage = new ResponseMessage("Success", 200, AgitResponseDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
 

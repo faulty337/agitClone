@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AgitRequestDto {
     public String agitname;
+    public String agitinfo;
 }
