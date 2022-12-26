@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 public class TestController {
-    PostResponseDto postResponseDto;
+    PostResponseDto postResponseDto = new PostResponseDto(1L, "test1", "범준", "내용", 0L, 0L, null, LocalDateTime.now(), false, new ArrayList<>(), "대충 그럴싸한 경로");
     Boolean like = null;
     @ApiOperation(value = "회원가입")
     @PostMapping("user/signup")
@@ -28,7 +28,7 @@ public class TestController {
         if(requestDto.getUsername().equals("test1")){
             throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
         }
-        if(requestDto.getPassword().equals(requestDto.getCheckPassword())){
+        if(!requestDto.getPassword().equals(requestDto.getCheckPassword())){
             throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
         }
 
@@ -119,9 +119,8 @@ public class TestController {
     }
 
     @ApiOperation(value = "게시물 생성")
-    @PostMapping("/post")
+    @PostMapping("agit/{agitId}/post")
     public ResponseEntity<ResponseMessage> createPost(@RequestBody PostRequestDto requestDto){
-
 
         this.postResponseDto = new PostResponseDto((long)1, "test1", "범준", requestDto.getContent(), (long)0, (long)0, null, LocalDateTime.now(), false, new ArrayList<>(), requestDto.getPicturePath());
 
@@ -130,12 +129,11 @@ public class TestController {
     }
 
     @ApiOperation(value = "게시물 수정")
-    @PutMapping("/post/{postId}")
+    @PutMapping("agit/post/{postId}")
     public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto){
         if(postId > 10){
             throw new CustomException(ErrorCode.CONTENT_NOT_FOUND);
         }
-
         if(this.postResponseDto.getContent().equals(requestDto.getContent())){
             throw new CustomException(ErrorCode.INVALID_UPDATE);
         }
@@ -145,7 +143,7 @@ public class TestController {
     }
 
     @ApiOperation(value = "게시물 삭제")
-    @DeleteMapping("/post/{postId}")
+    @DeleteMapping("agit/post/{postId}")
     public ResponseEntity<ResponseMessage> deletePost(@PathVariable Long postId){
         if(postId > 10){
             throw new CustomException(ErrorCode.CONTENT_NOT_FOUND);
@@ -166,11 +164,8 @@ public class TestController {
     }
 
     @ApiOperation(value = "댓글 수정")
-    @PutMapping("/post/{postId}/comment/{commentId}")
-    public ResponseEntity<ResponseMessage> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentRequestDto requestDto){
-        if(postId > 10){
-            throw new CustomException(ErrorCode.CONTENT_NOT_FOUND);
-        }
+    @PutMapping("/post/comment/{commentId}")
+    public ResponseEntity<ResponseMessage> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto requestDto){
         if(commentId > 6){
             throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
         }
@@ -180,11 +175,8 @@ public class TestController {
     }
 
     @ApiOperation(value = "댓글 삭제")
-    @DeleteMapping("/post/{postId}/comment/{commentId}")
-    public ResponseEntity<ResponseMessage> deleteComment(@PathVariable Long postId, @PathVariable Long commentId){
-        if(postId > 10){
-            throw new CustomException(ErrorCode.CONTENT_NOT_FOUND);
-        }
+    @DeleteMapping("/post/comment/{commentId}")
+    public ResponseEntity<ResponseMessage> deleteComment(@PathVariable Long commentId){
         if(commentId > 6){
             throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
         }
