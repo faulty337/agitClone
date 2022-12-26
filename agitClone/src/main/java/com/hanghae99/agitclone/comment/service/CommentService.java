@@ -7,9 +7,9 @@ import com.hanghae99.agitclone.comment.mapper.CommentMapper;
 import com.hanghae99.agitclone.comment.repository.CommentRepository;
 import com.hanghae99.agitclone.common.exception.CustomException;
 import com.hanghae99.agitclone.common.exception.ErrorCode;
+import com.hanghae99.agitclone.post.entity.Post;
 import com.hanghae99.agitclone.post.repository.PostRepository;
 import com.hanghae99.agitclone.user.entity.Users;
-import com.hanghae99.agitclone.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,23 +22,17 @@ public class CommentService {
 
     private final CommentMapper commentMapper;
 
-    private final UserRepository userRepository;
-
     private final PostRepository postRepository;
 
     //댓글 등록
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, Long userId, Long postId){
+    public CommentResponseDto createComment(CommentRequestDto requestDto, Users users, Long postId) {
 
-        Users users = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-        );
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
 
-        postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+        Comment comment = commentRepository.save(commentMapper.toComment(requestDto, users, false));
 
-        Comment comment = commentMapper.toComment(requestDto,users);
-
-        commentRepository.save(comment);
+        post.addCommentList(comment);
 
         return commentMapper.toResponse(comment);
     }
@@ -47,10 +41,6 @@ public class CommentService {
     @Transactional
     public CommentResponseDto updateComment(CommentRequestDto requestDto, Long commentId, Long userId, Long postId) {
 
-        Users users = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-        );
-
         postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
 
         //댓글 존재 확인
@@ -58,12 +48,12 @@ public class CommentService {
                 () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
-        if(!comment.getUsers().getUsername().equals(users.getUsername())){
-            throw new CustomException(ErrorCode.AUTHORIZATION_UPDATE_FAIL);
+        if (!comment.getUsers().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.AUTHORIZATION_DELETE_FAIL);
         }
 
-        comment.update(requestDto.getContent());
-        //게시글 수정
+        comment.update(requestDto.getContent(), true);
+        //댓글 수정
         return commentMapper.toResponse(comment);
 
     }
@@ -71,9 +61,6 @@ public class CommentService {
     //댓글 삭제
     public void deleteComment(Long commentId, Long userId, Long postId) {
 
-        Users users = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
-        );
 
         postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
 
@@ -82,7 +69,7 @@ public class CommentService {
                 () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
-        if(!comment.getUsers().getUsername().equals(users.getUsername())){
+        if (!comment.getUsers().getId().equals(userId)) {
             throw new CustomException(ErrorCode.AUTHORIZATION_DELETE_FAIL);
         }
 

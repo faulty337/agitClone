@@ -10,16 +10,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CommentMapper {
-    public Comment toComment(CommentRequestDto requestDto, Users users) {
-        return new Comment(requestDto.getContent(), users);
+    public Comment toComment(CommentRequestDto requestDto, Users users, boolean isModified) {
+        return new Comment(requestDto.getContent(), users, isModified);
     }
 
     public CommentResponseDto toResponse(Comment comment) {
         return CommentResponseDto.builder()
                 .id(comment.getId())
+                .username(comment.getUsers().getUsername())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .nickname(comment.getUsers().getNickname())
+                .isModified(comment.isModified())
                 .build();
     }
 }
