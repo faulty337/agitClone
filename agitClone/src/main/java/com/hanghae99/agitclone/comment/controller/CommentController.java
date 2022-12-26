@@ -2,27 +2,57 @@ package com.hanghae99.agitclone.comment.controller;
 
 
 import com.hanghae99.agitclone.comment.dto.CommentRequestDto;
+import com.hanghae99.agitclone.comment.dto.CommentResponseDto;
 import com.hanghae99.agitclone.comment.service.CommentService;
 import com.hanghae99.agitclone.common.ResponseMessage;
+import com.hanghae99.agitclone.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/post/{postId}/comment")
-@RequestMapping("/comment")
+@RequestMapping("/post/{postId}/comment")
 public class CommentController {
 
     private final CommentService commentService;
 
     @PostMapping()
-    public ResponseEntity<ResponseMessage> createComment(@RequestBody CommentRequestDto requestDto){
+    public ResponseEntity<ResponseMessage> createComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto,
+                                                         @PathVariable Long postId) {
 
-        commentService.createComment(requestDto);
+        Long userId = userDetails.getUser().getId();
 
-        ResponseMessage<?> responseMessage = new ResponseMessage<>("댓글작성 성공", 200, null);
+        CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userId, postId);
+
+        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("댓글작성 성공", 200, commentResponseDto);
+
+        return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
+    }
+
+    @PutMapping("/{commentId}")
+    public ResponseEntity<ResponseMessage> updateComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto,
+                                                         @PathVariable Long commentId, @PathVariable Long postId) {
+        Long userId = userDetails.getUser().getId();
+
+        CommentResponseDto commentResponseDto = commentService.updateComment(requestDto, commentId, postId, userId);
+
+        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("댓글수정 성공", 200, commentResponseDto);
+
+        return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<ResponseMessage> deleteComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long commentId, @PathVariable Long postId) {
+
+        Long userId = userDetails.getUser().getId();
+
+        commentService.deleteComment(commentId, userId, postId);
+
+        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("댓글삭제 성공", 200, null);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }

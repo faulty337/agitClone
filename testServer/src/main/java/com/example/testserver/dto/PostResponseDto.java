@@ -1,17 +1,17 @@
-package com.hanghae99.agitclone.post.dto;
+package com.example.testserver.dto;
 
-import com.hanghae99.agitclone.comment.dto.CommentResponseDto;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Getter
-@Builder
-public class ResponsePostDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PostResponseDto {
     private Long id;
     private String username;
     private String nickname;
@@ -19,8 +19,8 @@ public class ResponsePostDto {
     private Long likeCount;
     private Long hateCount;
     private Boolean postLike;
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
     private boolean isModified;
-
     private List<CommentResponseDto> commentList = new ArrayList<>();
+    private String picturePath;
 }
