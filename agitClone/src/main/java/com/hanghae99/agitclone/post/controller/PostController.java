@@ -50,11 +50,11 @@ public class PostController {
     }
 
     //게시글 삭제
-    /*@DeleteMapping("/agit/post/{postId}")
+    @DeleteMapping("/agit/post/{postId}")
     public ResponseEntity<ResponseMessage> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         postService.deletePost(postId, userDetails.getUserId());
         ResponseMessage<?> responseMessage = new ResponseMessage("Success", 200, null);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
-    }*/
+    }
 
 }
