@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hanghae99.agitclone.common.exception.ErrorCode.Agit_NOT_FOUND;
-import static com.hanghae99.agitclone.common.exception.ErrorCode.CONTENT_NOT_FOUND;
+import static com.hanghae99.agitclone.common.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -50,10 +49,20 @@ public class PostService {
 
     //게시글 수정
     @Transactional
-    public ResponsePostDto updatePost(Long postId, RequestPostDto requestPostDto){
+    public ResponsePostDto updatePost(Long postId, RequestPostDto requestPostDto, Users users){
+        //게시글 존재 확인.
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(CONTENT_NOT_FOUND)
         );
+
+        //아지트 확인
+        Agit agit = agitRepository.findById(post.getAgitId()).orElseThrow(
+                () -> new CustomException(Agit_NOT_FOUND)
+        );
+        //게시글 작성자와 현재 유저가 같은 사람인지 확인.
+        if(!post.getUser().getId().equals(users.getId())){
+            throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
+        }
 
         post.update(requestPostDto.getContent());
         return postMapper.toResponsePostDto(post);
@@ -61,17 +70,20 @@ public class PostService {
 
     //게시글 삭제
     @Transactional
-    public void deletePost(Long postId){
-        //게시글 존재 확인
+    public void deletePost(Long postId, Users users){
+        //게시글 존재 확인.
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(CONTENT_NOT_FOUND)
         );
+        //게시글 작성자와 현재 유저가 같은 사람인지 확인.
+        if(!post.getUser().getId().equals(users.getId())){
+            throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
+        }
 
         //아지트에서 제거 -> 영속성을 사용한 제거? 마지막 delete(post) 사용시 아지트의 postlist에서 삭제된다.
         Agit agit = agitRepository.findById(post.getAgitId()).orElseThrow(
                 () -> new CustomException(Agit_NOT_FOUND)
         );
-        agit.getPostList().remove(post);
 
 
         //게시글에 달려있는 댓글 정보 삭제
