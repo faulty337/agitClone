@@ -33,12 +33,29 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
 
+    public List<ResponsePostDto> getPostList(Long agitId, Long userId) {
+        Agit agit = agitRepository.findById(agitId).orElseThrow(
+                ()->new CustomException(ErrorCode.AGIT_NOT_FOUND)
+        );
+        if(agit.getAgitMemberList().stream().noneMatch(agitMember -> agitMember.getUserId().equals(userId))){
+            throw new CustomException(ErrorCode.AUTHORIZATION_AGIT_FAIL);
+        }
+
+        List<ResponsePostDto> postDtoList = new ArrayList<>();
+        List<Post> postList = agit.getPostList();
+
+        for(Post post : postList){
+            postDtoList.add(postMapper.toResponsePostDto(post, userId));
+        }
+        return postDtoList;
+    }
+
     //게시글 등록
     @Transactional
     public ResponsePostDto createPost(Long agitId, RequestPostDto requestPostDto, Users users) {
         //아지트에 게시글 정보 추가
         Agit agit = agitRepository.findById(agitId).orElseThrow(
-                () -> new CustomException(Agit_NOT_FOUND)
+                () -> new CustomException(AGIT_NOT_FOUND)
         );
         //게시글 저장
         Post post = postRepository.save(postMapper.toEntity(requestPostDto, users, agitId));
@@ -54,6 +71,7 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(CONTENT_NOT_FOUND)
         );
+
 
         //게시글 작성자와 현재 유저가 같은 사람인지 확인.
         if(!post.getUser().getId().equals(userId)){
@@ -75,6 +93,7 @@ public class PostService {
         if(!post.getUser().getId().equals(userId)){
             throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
         }
+
 
         //게시글에 달려있는 댓글 정보 삭제
         List<Long> commentList = new ArrayList<>();
