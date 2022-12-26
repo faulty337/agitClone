@@ -36,31 +36,27 @@ public class PostService {
     //게시글 등록
     @Transactional
     public ResponsePostDto createPost(Long agitId, RequestPostDto requestPostDto, Users users) {
-        //게시글 저장
-        Post post = postRepository.save(postMapper.toEntity(requestPostDto, users, agitId));
-
         //아지트에 게시글 정보 추가
         Agit agit = agitRepository.findById(agitId).orElseThrow(
                 () -> new CustomException(Agit_NOT_FOUND)
         );
+        //게시글 저장
+        Post post = postRepository.save(postMapper.toEntity(requestPostDto, users, agitId));
+
         agit.addPostList(post);
         return postMapper.toResponsePostDto(post);
     }
 
     //게시글 수정
     @Transactional
-    public ResponsePostDto updatePost(Long postId, RequestPostDto requestPostDto, Users users){
+    public ResponsePostDto updatePost(Long postId, RequestPostDto requestPostDto, Long userId){
         //게시글 존재 확인.
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(CONTENT_NOT_FOUND)
         );
 
-        //아지트 확인
-        Agit agit = agitRepository.findById(post.getAgitId()).orElseThrow(
-                () -> new CustomException(Agit_NOT_FOUND)
-        );
         //게시글 작성자와 현재 유저가 같은 사람인지 확인.
-        if(!post.getUser().getId().equals(users.getId())){
+        if(!post.getUser().getId().equals(userId)){
             throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
         }
 
@@ -70,21 +66,15 @@ public class PostService {
 
     //게시글 삭제
     @Transactional
-    public void deletePost(Long postId, Users users){
+    public void deletePost(Long postId, Long userId){
         //게시글 존재 확인.
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(CONTENT_NOT_FOUND)
         );
         //게시글 작성자와 현재 유저가 같은 사람인지 확인.
-        if(!post.getUser().getId().equals(users.getId())){
+        if(!post.getUser().getId().equals(userId)){
             throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
         }
-
-        //아지트에서 제거 -> 영속성을 사용한 제거? 마지막 delete(post) 사용시 아지트의 postlist에서 삭제된다.
-        Agit agit = agitRepository.findById(post.getAgitId()).orElseThrow(
-                () -> new CustomException(Agit_NOT_FOUND)
-        );
-
 
         //게시글에 달려있는 댓글 정보 삭제
         List<Long> commentList = new ArrayList<>();
@@ -95,16 +85,7 @@ public class PostService {
         if(!commentList.isEmpty()){
             commentRepository.deleteAllByIdInQuery(commentList);
         }
-
-        //게시글 관련된 좋아요 정보 삭제
-        List<Long> postLikeList = new ArrayList<>();
-        for(PostLike postLike : post.getPostLikeList()){
-            postLikeList.add(postLike.getId());
-        }
-
-        if(!postLikeList.isEmpty()){
-            postLikeRepository.deleteAllByIdInQuery(postLikeList);
-        }
+        postLikeRepository.deleteAllByPostId(post.getId());
 
         postRepository.delete(post);
     }

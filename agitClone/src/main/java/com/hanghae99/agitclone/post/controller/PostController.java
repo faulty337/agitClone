@@ -30,7 +30,7 @@ public class PostController {
     //게시글 수정
     @PutMapping("/agit/post/{postId}")
     public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto, userDetails.getUser());
+        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto, userDetails.getUserId());
         ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("Success", 200, responsePostDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
@@ -38,7 +38,7 @@ public class PostController {
     //게시글 삭제
     @DeleteMapping("/agit/post/{postId}")
     public ResponseEntity<ResponseMessage> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        postService.deletePost(postId, userDetails.getUser());
+        postService.deletePost(postId, userDetails.getUserId());
         ResponseMessage<?> responseMessage = new ResponseMessage("Success", 200, null);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
