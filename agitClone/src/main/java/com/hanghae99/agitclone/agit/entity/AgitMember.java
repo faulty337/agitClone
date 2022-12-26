@@ -1,5 +1,6 @@
 package com.hanghae99.agitclone.agit.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,4 +17,12 @@ public class AgitMember {
 
     @Column(nullable = false)
     private Long userId;
+
+    private Long agitId;
+
+    @Builder
+    public AgitMember(Long userId, Long agitId){
+        this.userId = userId;
+        this.agitId = agitId;
+    }
 }
