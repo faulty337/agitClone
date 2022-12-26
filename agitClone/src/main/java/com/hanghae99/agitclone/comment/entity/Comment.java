@@ -1,9 +1,11 @@
 package com.hanghae99.agitclone.comment.entity;
 
 import com.hanghae99.agitclone.common.TimeStamped;
+import com.hanghae99.agitclone.post.entity.Post;
 import com.hanghae99.agitclone.user.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.parameters.P;
 
 import javax.persistence.*;
 
@@ -23,10 +25,10 @@ public class Comment extends TimeStamped {
     @Column(nullable = false)
     private String content;
 
-    public Comment(String content){
+    public Comment(String content, Users users){
 
         this.content = content;
-
+        this.users = users;
     }
 
     public void update(String content){
