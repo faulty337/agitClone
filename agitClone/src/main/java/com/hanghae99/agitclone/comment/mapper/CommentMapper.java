@@ -13,7 +13,7 @@ public class CommentMapper {
 
     public CommentResponseDto toResponse(Comment comment) {
         return CommentResponseDto.builder()
-                .commentId(comment.getId())
+                .id(comment.getId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .build();

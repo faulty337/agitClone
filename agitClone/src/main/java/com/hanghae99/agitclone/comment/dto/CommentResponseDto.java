@@ -1,6 +1,7 @@
 package com.hanghae99.agitclone.comment.dto;
 
 import com.hanghae99.agitclone.comment.entity.Comment;
+import com.hanghae99.agitclone.common.TimeStamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +11,9 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @Builder
-public class CommentResponseDto {
+public class CommentResponseDto extends TimeStamped {
 
-    private Long commentId;
+    private Long id;
 
     private String username;
 
@@ -22,10 +23,4 @@ public class CommentResponseDto {
 
     private LocalDateTime createdAt;
 
-    public CommentResponseDto(Comment comment){
-
-        this.commentId = comment.getId();
-        this.content = comment.getContent();
-        this.createdAt = comment.getCreatedAt();
-    }
 }

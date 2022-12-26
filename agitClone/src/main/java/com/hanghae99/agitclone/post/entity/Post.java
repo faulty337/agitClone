@@ -28,12 +28,13 @@ public class Post extends TimeStamped {
     @Column(nullable = false, length = 65000)
     private String content;
 
-    private Long agitId;
     private boolean isModified;
 
     private long likeCount;
 
     private long hateCount;
+
+    private long agitId;
 
     @OneToMany
     @JoinColumn(name = "postId")
@@ -44,12 +45,13 @@ public class Post extends TimeStamped {
     private List<Comment> commentList = new ArrayList<>();
 
     @Builder
-    public Post(String content, Users users, boolean isModified, long likeCount, long hateCount){
+    public Post(String content, Users users, boolean isModified, long likeCount, long hateCount, long agitId){
         this.content = content;
         this.user = users;
         this.isModified = isModified;
         this.likeCount = likeCount;
         this.hateCount = hateCount;
+        this.agitId = agitId;
     }
 
     public void update(String content){

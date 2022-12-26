@@ -11,7 +11,6 @@ import org.apache.catalina.User;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
-
 @Component
 @RequiredArgsConstructor
 public class PostMapper {
@@ -19,13 +18,14 @@ public class PostMapper {
     private final CommentMapper commentMapper;
 
     //Dto -> Entity -> 받은 정보로 Post 만들어주기.
-    public Post toEntity(RequestPostDto requestPostDto, Users users) {
+    public Post toEntity(RequestPostDto requestPostDto, Users users, long agitId) {
         return Post.builder()
                 .content(requestPostDto.getContent())
                 .users(users)
                 .isModified(false)
                 .likeCount(0)
                 .hateCount(0)
+                .agitId(agitId)
                 .build();
     }
 

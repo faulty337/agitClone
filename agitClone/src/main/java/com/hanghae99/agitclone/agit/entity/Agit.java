@@ -2,6 +2,8 @@ package com.hanghae99.agitclone.agit.entity;
 
 
 import com.hanghae99.agitclone.post.entity.Post;
+import com.hanghae99.agitclone.user.entity.Users;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +31,13 @@ public class Agit {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "agitId")
     private List<Post> PostList = new ArrayList<>();
+
+    public void addPostList(Post post) {
+        this.PostList.add(post);
+    }
+    @Builder
+    public Agit(String agitName){
+        this.agitName = agitName;
+    }
+
 }
