@@ -16,5 +16,7 @@ public class PostLike {
     @Column(nullable = false)
     private Long userId;
 
+    private Long postId;
+
     private boolean isHate;
 }
