@@ -48,8 +48,8 @@ public class PostMapper {
         Boolean like = postLike == null ? null : !postLike.isHate();
         return PostResponseDto.builder()
                 .id(post.getId())
-                .username(post.getUser().getUsername())
-                .nickname(post.getUser().getNickname())
+                .username(post.getUsers().getUsername())
+                .nickname(post.getUsers().getNickname())
                 .content(post.getContent())
                 .postLike(like)
                 .likeCount(post.getLikeCount())
