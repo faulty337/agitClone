@@ -6,6 +6,7 @@ import com.hanghae99.agitclone.comment.entity.Comment;
 import com.hanghae99.agitclone.comment.repository.CommentRepository;
 import com.hanghae99.agitclone.common.exception.CustomException;
 import com.hanghae99.agitclone.common.exception.ErrorCode;
+import com.hanghae99.agitclone.post.dto.MainResponseDto;
 import com.hanghae99.agitclone.post.dto.RequestPostDto;
 import com.hanghae99.agitclone.post.dto.ResponsePostDto;
 import com.hanghae99.agitclone.post.entity.Post;
@@ -33,7 +34,7 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
 
-    public List<ResponsePostDto> getPostList(Long agitId, Long userId) {
+    public MainResponseDto getPostList(Long agitId, Long userId) {
         Agit agit = agitRepository.findById(agitId).orElseThrow(
                 ()->new CustomException(ErrorCode.AGIT_NOT_FOUND)
         );
@@ -47,7 +48,8 @@ public class PostService {
         for(Post post : postList){
             postDtoList.add(postMapper.toResponsePostDto(post, userId));
         }
-        return postDtoList;
+        MainResponseDto mainResponseDto = new MainResponseDto(agit.getAgitName(), agit.getAgitInfo(), postDtoList);
+        return mainResponseDto;
     }
 
     //게시글 등록
