@@ -75,11 +75,11 @@ public class PostService {
 
 
         //게시글 작성자와 현재 유저가 같은 사람인지 확인.
-        if(!post.getUser().getId().equals(userId)){
+        if(!post.getUsers().getId().equals(userId)){
             throw new CustomException(AUTHORIZATION_UPDATE_FAIL);
         }
 
-        post.update(requestPostDto.getContent());
+        post.change(requestPostDto.getContent());
         return postMapper.toResponsePostDto(post);
     }
 
@@ -91,7 +91,7 @@ public class PostService {
                 () -> new CustomException(CONTENT_NOT_FOUND)
         );
         //게시글 작성자와 현재 유저가 같은 사람인지 확인.
-        if(!post.getUser().getId().equals(userId)){
+        if(!post.getUsers().getId().equals(userId)){
             throw new CustomException(AUTHORIZATION_DELETE_FAIL);
         }
 

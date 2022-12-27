@@ -33,8 +33,8 @@ public class PostMapper {
     public PostResponseDto toResponsePostDto(Post post){
         return PostResponseDto.builder()
                 .id(post.getId())
-                .username(post.getUser().getUsername())
-                .nickname(post.getUser().getNickname())
+                .username(post.getUsers().getUsername())
+                .nickname(post.getUsers().getNickname())
                 .content(post.getContent())
                 .likeCount(post.getLikeCount())
                 .hateCount(post.getHateCount())
