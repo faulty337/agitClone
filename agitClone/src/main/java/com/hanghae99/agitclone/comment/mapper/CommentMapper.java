@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CommentMapper {
-    public Comment toComment(CommentRequestDto requestDto, Users users, boolean isModified) {
-        return new Comment(requestDto.getContent(), users, isModified);
+    public Comment toComment(CommentRequestDto requestDto, Users users) {
+        return new Comment(requestDto.getContent(), users);
     }
 
     public CommentResponseDto toResponse(Comment comment) {

@@ -56,6 +56,7 @@ public class Post extends TimeStamped {
 
     public void update(String content){
         this.content = content;
+        this.isModified = true;
     }
 
     public void addCommentList(Comment comment){this.commentList.add(comment);}

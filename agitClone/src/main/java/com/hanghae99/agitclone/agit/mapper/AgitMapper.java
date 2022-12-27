@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class AgitMapper {
     public Agit toEntity(AgitRequestDto agitRequestDto){
         return Agit.builder()
-                .agitName(agitRequestDto.getAgitname())
-                .agitInfo(agitRequestDto.getAgitinfo())
+                .agitName(agitRequestDto.getAgitName())
+                .agitInfo(agitRequestDto.getAgitInfo())
                 .build();
     }
 

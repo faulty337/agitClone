@@ -2,19 +2,15 @@ package com.hanghae99.agitclone.post.controller;
 
 import com.hanghae99.agitclone.common.ResponseMessage;
 import com.hanghae99.agitclone.post.dto.MainResponseDto;
-import com.hanghae99.agitclone.post.dto.RequestPostDto;
-import com.hanghae99.agitclone.post.dto.ResponsePostDto;
+import com.hanghae99.agitclone.post.dto.PostRequestDto;
+import com.hanghae99.agitclone.post.dto.PostResponseDto;
 import com.hanghae99.agitclone.post.service.PostService;
-import com.hanghae99.agitclone.user.entity.Users;
 import lombok.RequiredArgsConstructor;
 import com.hanghae99.agitclone.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,9 +21,9 @@ public class PostController {
     //유저 정보 수정 필요
 
     @PostMapping("/agit/{agitId}/post")
-    public ResponseEntity<ResponseMessage> createPost(@PathVariable Long agitId, @RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.createPost(agitId, requestPostDto, userDetails.getUser());
-        ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("Success", 200, responsePostDto);
+    public ResponseEntity<ResponseMessage> createPost(@PathVariable Long agitId, @RequestBody PostRequestDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        PostResponseDto responsePostDto = postService.createPost(agitId, requestPostDto, userDetails.getUser());
+        ResponseMessage<PostResponseDto> responseMessage = new ResponseMessage<>("Success", 200, responsePostDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
 
@@ -44,9 +40,9 @@ public class PostController {
 
     //게시글 수정
     @PutMapping("/agit/post/{postId}")
-    public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody RequestPostDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        ResponsePostDto responsePostDto = postService.updatePost(postId, requestPostDto, userDetails.getUserId());
-        ResponseMessage<ResponsePostDto> responseMessage = new ResponseMessage<>("Success", 200, responsePostDto);
+    public ResponseEntity<ResponseMessage> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto requestPostDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        PostResponseDto responsePostDto = postService.updatePost(postId, requestPostDto, userDetails.getUserId());
+        ResponseMessage<PostResponseDto> responseMessage = new ResponseMessage<>("Success", 200, responsePostDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
 

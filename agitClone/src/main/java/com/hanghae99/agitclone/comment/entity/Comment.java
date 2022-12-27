@@ -27,17 +27,17 @@ public class Comment extends TimeStamped {
 
     private boolean isModified;
 
-    public Comment(String content, Users users, boolean isModified) {
+    public Comment(String content, Users users) {
 
         this.content = content;
         this.users = users;
-        this.isModified = isModified;
+
     }
 
-    public void update(String content, boolean isModified) {
+    public void update(String content) {
 
         this.content = content;
-        this.isModified = isModified;
+        this.isModified = true;
     }
 
 }

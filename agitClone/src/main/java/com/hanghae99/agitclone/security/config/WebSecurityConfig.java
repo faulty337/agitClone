@@ -54,7 +54,8 @@ public class WebSecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // api 허용정책 설정
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, new String[]{"/user/signup","/user/login","/user/idcheck"}).permitAll()
+                .antMatchers(HttpMethod.POST, new String[]{"/user/signup","/user/login"}).permitAll()
+                .antMatchers(HttpMethod.GET, "/user/idcheck").permitAll()
 //                .antMatchers(HttpMethod.GET, new String[]{"/api/members/kakao","/api/members/search"}).permitAll()
 //                .antMatchers(HttpMethod.GET, new String[]{"/api/posts","/api/posts/{id}"}).permitAll()
                 .anyRequest().authenticated()

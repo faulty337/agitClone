@@ -37,7 +37,7 @@ public class UserController {
     }
 
     //ID중복체크
-    @PostMapping("/idcheck")
+    @GetMapping("/idcheck")
     public ResponseMessage<?> idcheck(@RequestBody IdcheckRequestDto idcheckRequestDto){
         userService.idcheck(idcheckRequestDto);
         return new ResponseMessage<>("Susses",200,null);

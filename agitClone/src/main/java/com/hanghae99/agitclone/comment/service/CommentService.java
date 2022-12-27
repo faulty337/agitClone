@@ -30,7 +30,7 @@ public class CommentService {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
 
-        Comment comment = commentRepository.save(commentMapper.toComment(requestDto, users, false));
+        Comment comment = commentRepository.save(commentMapper.toComment(requestDto, users));
 
         post.addCommentList(comment);
 
@@ -38,21 +38,30 @@ public class CommentService {
     }
 
     //댓글 수정
+
     @Transactional
-    public CommentResponseDto updateComment(CommentRequestDto requestDto, Long commentId, Long userId, Long postId) {
+    public CommentResponseDto updateComment(CommentRequestDto requestDto, Long commentId, Long postId, Long userId) {
 
-        postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
+        System.out.println("CommentService.updateComment");
+        System.out.println(commentId + " " + postId + " " + userId);
+        for(Comment c : post.getCommentList()){
+            System.out.println(c.getId() + " " + commentId);
+        }
+        if(post.getCommentList().stream().noneMatch(comment -> comment.getId().equals(commentId))){
+            throw new CustomException(ErrorCode.CONTENT_NOT_FOUND);
+        }
         //댓글 존재 확인
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)
         );
 
+
         if (!comment.getUsers().getId().equals(userId)) {
-            throw new CustomException(ErrorCode.AUTHORIZATION_DELETE_FAIL);
+            throw new CustomException(ErrorCode.AUTHORIZATION_UPDATE_FAIL);
         }
 
-        comment.update(requestDto.getContent(), true);
+        comment.update(requestDto.getContent());
         //댓글 수정
         return commentMapper.toResponse(comment);
 
@@ -61,9 +70,11 @@ public class CommentService {
     //댓글 삭제
     public void deleteComment(Long commentId, Long userId, Long postId) {
 
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
 
-        postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-
+        if(post.getCommentList().stream().noneMatch(comment -> comment.getId().equals(commentId))){
+            throw new CustomException(ErrorCode.CONTENT_NOT_FOUND);
+        }
         //댓글 존재 확인
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)

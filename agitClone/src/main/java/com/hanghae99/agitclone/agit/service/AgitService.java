@@ -10,6 +10,7 @@ import com.hanghae99.agitclone.agit.mapper.AgitMapper;
 import com.hanghae99.agitclone.agit.repository.AgitMemberRepository;
 import com.hanghae99.agitclone.agit.repository.AgitRepository;
 import com.hanghae99.agitclone.common.exception.CustomException;
+import com.hanghae99.agitclone.common.exception.ErrorCode;
 import com.hanghae99.agitclone.user.entity.Users;
 import com.hanghae99.agitclone.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,17 +45,24 @@ public class AgitService {
         Users userinfo = userRepository.findByUsername(agitInviteRequestDto.getUsername()).orElseThrow(
                 () -> new CustomException(USERNAME_NOT_FOUND)
         );
+
+        Long joinTarget = userinfo.getId();
+
         //아지트 존재하는지 확인
         Agit agit = agitRepository.findById(agitId).orElseThrow(
                 () -> new CustomException(AGIT_NOT_FOUND)
         );
 
-        //아지트에 이미 초대된 상태인지 확인.(중복체크) 아니면 멤버에 추가.
-        if(agitMemberRepository.findById(userinfo.getId()).isPresent()){
-            if(!agitMemberRepository.findById(userinfo.getId()).equals(userinfo.getId())){
-                throw new CustomException(DUPLICATE_MEMBERNAME);
-            }
+        if(agit.getAgitMemberList().stream().anyMatch(agitMember -> agitMember.getUserId().equals(joinTarget))){
+            throw new CustomException(DUPLICATE_MEMBERNAME);
         }
+
+//        //아지트에 이미 초대된 상태인지 확인.(중복체크) 아니면 멤버에 추가.
+//        if(agitMemberRepository.findById(userinfo.getId()).isPresent()){
+//            if(!agitMemberRepository.findById(userinfo.getId()).equals(userinfo.getId())){
+//                throw new CustomException(DUPLICATE_MEMBERNAME);
+//            }
+//        }
         //아지트에 추가.
         agitMemberRepository.save(agitMapper.toEntity(userinfo.getId(), agitId));
 

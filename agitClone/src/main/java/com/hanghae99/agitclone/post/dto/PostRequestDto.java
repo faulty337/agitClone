@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RequestPostDto {
+public class PostRequestDto {
     public String content;
     public String picturePath;
 }

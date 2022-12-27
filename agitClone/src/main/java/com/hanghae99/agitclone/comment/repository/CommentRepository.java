@@ -8,11 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long>{
     @Transactional
     @Modifying
     @Query("delete from Comment c where c.id in :ids")
     void deleteAllByIdInQuery(@Param("ids") List<Long> ids);
+
+
 
 }

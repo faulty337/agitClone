@@ -11,5 +11,5 @@ import java.util.List;
 public class MainResponseDto {
     private String agitName;
     private String agitInfo;
-    private List<ResponsePostDto> postList = new ArrayList<>();
+    private List<PostResponseDto> postList = new ArrayList<>();
 }
