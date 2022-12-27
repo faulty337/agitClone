@@ -26,9 +26,9 @@ public class CommentController {
 
         Long userId = userDetails.getUser().getId();
 
-        CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userId, postId);
+        CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userDetails.getUser(), postId);
 
-        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("댓글작성 성공", 200, commentResponseDto);
+        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("Success", 200, commentResponseDto);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
@@ -40,7 +40,7 @@ public class CommentController {
 
         CommentResponseDto commentResponseDto = commentService.updateComment(requestDto, commentId, postId, userId);
 
-        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("댓글수정 성공", 200, commentResponseDto);
+        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("Success", 200, commentResponseDto);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
@@ -52,7 +52,7 @@ public class CommentController {
 
         commentService.deleteComment(commentId, userId, postId);
 
-        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("댓글삭제 성공", 200, null);
+        ResponseMessage<CommentResponseDto> responseMessage = new ResponseMessage<>("Success", 200, null);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }

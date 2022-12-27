@@ -1,6 +1,5 @@
 package com.hanghae99.agitclone.comment.dto;
 
-import com.hanghae99.agitclone.comment.entity.Comment;
 import com.hanghae99.agitclone.common.TimeStamped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,5 +21,7 @@ public class CommentResponseDto extends TimeStamped {
     private String nickname;
 
     private LocalDateTime createdAt;
+
+    private boolean isModified;
 
 }

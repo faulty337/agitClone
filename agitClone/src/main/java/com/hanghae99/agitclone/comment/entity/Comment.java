@@ -25,17 +25,20 @@ public class Comment extends TimeStamped {
     @Column(nullable = false)
     private String content;
 
-    public Comment(String content, Users users){
+    private boolean isModified;
+
+    public Comment(String content, Users users, boolean isModified) {
 
         this.content = content;
         this.users = users;
+        this.isModified = isModified;
     }
 
-    public void update(String content){
+    public void update(String content, boolean isModified) {
 
         this.content = content;
+        this.isModified = isModified;
     }
-
 
 }
 
