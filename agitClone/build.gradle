@@ -37,6 +37,7 @@ dependencies {
 
     //스프링 시큐리티 dependency 추가
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'mysql:mysql-connector-java'
 }
 
 tasks.named('test') {

@@ -1,6 +1,8 @@
 package com.hanghae99.agitclone.post.service;
 
 import com.hanghae99.agitclone.agit.entity.Agit;
+import com.hanghae99.agitclone.agit.entity.AgitMember;
+import com.hanghae99.agitclone.agit.repository.AgitMemberRepository;
 import com.hanghae99.agitclone.agit.repository.AgitRepository;
 import com.hanghae99.agitclone.comment.entity.Comment;
 import com.hanghae99.agitclone.comment.repository.CommentRepository;
@@ -32,13 +34,14 @@ public class PostService {
     private final PostMapper postMapper;
     private final CommentRepository commentRepository;
     private final PostLikeRepository postLikeRepository;
+    private final AgitMemberRepository agitMemberRepository;
 
     public MainResponseDto getPostList(Long agitId, Long userId) {
         Agit agit = agitRepository.findById(agitId).orElseThrow(
-                ()->new CustomException(ErrorCode.AGIT_NOT_FOUND)
+                ()->new CustomException(AGIT_NOT_FOUND)
         );
         if(agit.getAgitMemberList().stream().noneMatch(agitMember -> agitMember.getUserId().equals(userId))){
-            throw new CustomException(ErrorCode.AUTHORIZATION_AGIT_FAIL);
+            throw new CustomException(AUTHORIZATION_AGIT_FAIL);
         }
 
         List<PostResponseDto> postDtoList = new ArrayList<>();
@@ -54,6 +57,11 @@ public class PostService {
     //게시글 등록
     @Transactional
     public PostResponseDto createPost(Long agitId, PostRequestDto requestPostDto, Users users) {
+        //작성자가 아지트 내에 있는 유저인지 확인
+        List<AgitMember> agitMemberList = agitMemberRepository.findAllByAgitId(agitId);
+        if(agitMemberList.stream().noneMatch(agitMember -> agitMember.getUserId().equals(users.getId()))){
+            throw new CustomException(AUTHORIZATION_AGIT_FAIL);
+        }
         //아지트에 게시글 정보 추가
         Agit agit = agitRepository.findById(agitId).orElseThrow(
                 () -> new CustomException(AGIT_NOT_FOUND)
@@ -72,7 +80,6 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new CustomException(CONTENT_NOT_FOUND)
         );
-
 
         //게시글 작성자와 현재 유저가 같은 사람인지 확인.
         if(!post.getUser().getId().equals(userId)){
