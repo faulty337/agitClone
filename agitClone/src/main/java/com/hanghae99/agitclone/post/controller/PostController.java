@@ -1,6 +1,7 @@
 package com.hanghae99.agitclone.post.controller;
 
 import com.hanghae99.agitclone.common.ResponseMessage;
+import com.hanghae99.agitclone.post.dto.MainResponseDto;
 import com.hanghae99.agitclone.post.dto.RequestPostDto;
 import com.hanghae99.agitclone.post.dto.ResponsePostDto;
 import com.hanghae99.agitclone.post.service.PostService;
@@ -35,8 +36,8 @@ public class PostController {
     @GetMapping("/agit/{agitId}")
     public ResponseEntity<ResponseMessage> getPost(@PathVariable Long agitId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         Long userId = userDetails.getUserId();
-        List<ResponsePostDto> responsePostDtoList = postService.getPostList(agitId, userId);
-        ResponseMessage<List<ResponsePostDto>> responseMessage = new ResponseMessage<>("Success", 200, responsePostDtoList);
+        MainResponseDto mainResponseDto = postService.getPostList(agitId, userId);
+        ResponseMessage<MainResponseDto> responseMessage = new ResponseMessage<>("Success", 200, mainResponseDto);
 
         return new ResponseEntity<>(responseMessage, HttpStatus.valueOf(responseMessage.getStatusCode()));
     }
