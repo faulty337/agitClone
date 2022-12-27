@@ -23,9 +23,9 @@ public class Post extends TimeStamped {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    private Users user;
+    private Users users;
 
-    @Column(nullable = false, length = 65000)
+    @Column(nullable = false, length = 15000)
     private String content;
 
     private boolean isModified;
@@ -47,14 +47,14 @@ public class Post extends TimeStamped {
     @Builder
     public Post(String content, Users users, boolean isModified, long likeCount, long hateCount, long agitId){
         this.content = content;
-        this.user = users;
+        this.users = users;
         this.isModified = isModified;
         this.likeCount = likeCount;
         this.hateCount = hateCount;
         this.agitId = agitId;
     }
 
-    public void update(String content){
+    public void change(String content){
         this.content = content;
         this.isModified = true;
     }

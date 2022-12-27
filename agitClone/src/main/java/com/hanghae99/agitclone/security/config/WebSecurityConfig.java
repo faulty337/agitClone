@@ -42,7 +42,6 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         // h2-console 사용 및 resources 접근 허용 설정
         return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toH2Console())
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
@@ -54,8 +53,12 @@ public class WebSecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // api 허용정책 설정
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, new String[]{"/user/signup","/user/login"}).permitAll()
+                .antMatchers(HttpMethod.POST, new String[]{"/user/signup","/user/login", "/user/idcheck"}).permitAll()
                 .antMatchers(HttpMethod.GET, "/user/idcheck").permitAll()
+                .antMatchers("/v2/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/swagger**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
 //                .antMatchers(HttpMethod.GET, new String[]{"/api/members/kakao","/api/members/search"}).permitAll()
 //                .antMatchers(HttpMethod.GET, new String[]{"/api/posts","/api/posts/{id}"}).permitAll()
                 .anyRequest().authenticated()
@@ -80,9 +83,9 @@ public class WebSecurityConfig {
             };
 
     /**
-     * 이 설정을 해주면, 우리가 설정한대로 CorsFilter가 Security의 filter에 추가되어
-     * 예비 요청에 대한 처리를 해주게 됩니다.
-     * cors 개념 참고 - https://inpa.tistory.com/entry/WEB-%F0%9F%93%9A-CORS-%F0%9F%92%AF-%EC%A0%95%EB%A6%AC-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-%F0%9F%91%8F
+     * 이 설정.
+     * cors 개념 참고 - https://inpa.ti을 해주면, 우리가 설정한대로 CorsFilter가 Security의 filter에 추가되어
+     *      * 예비 요청에 대한 처리를 해주게 됩니다story.com/entry/WEB-%F0%9F%93%9A-CORS-%F0%9F%92%AF-%EC%A0%95%EB%A6%AC-%ED%95%B4%EA%B2%B0-%EB%B0%A9%EB%B2%95-%F0%9F%91%8F
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
@@ -92,13 +95,14 @@ public class WebSecurityConfig {
         // 서버에서 응답하는 리소스에 접근 가능한 출처를 명시
         // Access-Control-Allow-Origin
         //config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin(""); //요거 변경하시면 됩니다.
-        config.addAllowedOrigin("");
+//        config.addAllowedOrigin(""); //요거 변경하시면 됩니다.
+        config.addAllowedOriginPattern("*");
 
         // 특정 헤더를 클라이언트 측에서 꺼내어 사용할 수 있게 지정
         // 만약 지정하지 않는다면, Authorization 헤더 내의 토큰 값을 사용할 수 없음
         // Access-Control-Expose-Headers
-        config.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+//        config.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+        config.addAllowedHeader("*");
 
         // 본 요청에 허용할 HTTP method(예비 요청에 대한 응답 헤더에 추가됨)
         // Access-Control-Allow-Methods
@@ -115,7 +119,7 @@ public class WebSecurityConfig {
 
         // allowCredentials 를 true로 하였을 때,
         // allowedOrigin의 값이 * (즉, 모두 허용)이 설정될 수 없도록 검증합니다.
-        config.validateAllowCredentials();
+//        config.validateAllowCredentials();
 
         // 어떤 경로에 이 설정을 적용할 지 명시합니다. (여기서는 전체 경로)
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
