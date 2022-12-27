@@ -30,4 +30,10 @@ public class Users {
         this.nickname = nickname;
         this.password = password;
     }
+
+    @Builder
+    public Users(String username, String nickname){
+        this.username = username;
+        this.nickname = nickname;
+    }
 }
