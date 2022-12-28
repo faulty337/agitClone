@@ -45,8 +45,9 @@ public class PostMapper {
     }
     public PostResponseDto toResponsePostDto(Post post, Long userId){
         PostLike postLike = post.getPostLikeList().stream().filter(temp -> temp.getUserId().equals(userId)).findFirst().orElse(null);
-        Boolean like = postLike == null ? null : !postLike.isHate();
-        return PostResponseDto.builder()
+        Boolean like = postLike == null ? null : !postLike.getIsHate();
+        return ResponsePostDto.builder()
+
                 .id(post.getId())
                 .username(post.getUsers().getUsername())
                 .nickname(post.getUsers().getNickname())
@@ -59,8 +60,6 @@ public class PostMapper {
                 .commentList(post.getCommentList().stream().map(comment -> commentMapper.toResponse(comment)).collect(Collectors.toList()))
                 .build();
     }
-
-
 
     //전체 조회용 필요한가?
 
