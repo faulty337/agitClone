@@ -24,7 +24,6 @@ public class CommentService {
 
     private final PostRepository postRepository;
 
-    //댓글 등록
     @Transactional
     public CommentResponseDto createComment(CommentRequestDto requestDto, Users users, Long postId) {
 
@@ -37,29 +36,9 @@ public class CommentService {
         return commentMapper.toResponse(comment);
     }
 
-    //댓글 수정
-
     @Transactional
     public CommentResponseDto updateComment(CommentRequestDto requestDto, Long commentId, Long postId, Long userId) {
-
-        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));
-        System.out.println("CommentService.updateComment");
-        System.out.println(commentId + " " + postId + " " + userId);
-        for(Comment c : post.getCommentList()){
-            System.out.println(c.getId() + " " + commentId);
-        }
-        if(post.getCommentList().stream().noneMatch(comment -> comment.getId().equals(commentId))){
-            throw new CustomException(ErrorCode.CONTENT_NOT_FOUND);
-        }
-        //댓글 존재 확인
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND)
-        );
-
-
-        if (!comment.getUsers().getId().equals(userId)) {
-            throw new CustomException(ErrorCode.AUTHORIZATION_UPDATE_FAIL);
-        }
+        Comment comment = checkAuth(postId,commentId, userId);
 
         comment.update(requestDto.getContent());
         //댓글 수정
@@ -67,7 +46,6 @@ public class CommentService {
 
     }
 
-    //댓글 삭제
     public void deleteComment(Long commentId, Long userId, Long postId) {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.CONTENT_NOT_FOUND));

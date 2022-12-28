@@ -1,9 +1,6 @@
 package com.hanghae99.agitclone.post.controller;
 
-import com.hanghae99.agitclone.comment.dto.CommentResponseDto;
 import com.hanghae99.agitclone.common.ResponseMessage;
-import com.hanghae99.agitclone.post.dto.PostHateDto;
-import com.hanghae99.agitclone.post.dto.PostLikeDto;
 import com.hanghae99.agitclone.post.dto.PostLikeResponseDto;
 import com.hanghae99.agitclone.post.service.PostLikeService;
 import com.hanghae99.agitclone.security.UserDetailsImpl;
@@ -11,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/post/{postId}")

@@ -46,7 +46,7 @@ public class PostMapper {
     public PostResponseDto toResponsePostDto(Post post, Long userId){
         PostLike postLike = post.getPostLikeList().stream().filter(temp -> temp.getUserId().equals(userId)).findFirst().orElse(null);
         Boolean like = postLike == null ? null : !postLike.getIsHate();
-        return ResponsePostDto.builder()
+        return PostResponseDto.builder()
 
                 .id(post.getId())
                 .username(post.getUsers().getUsername())

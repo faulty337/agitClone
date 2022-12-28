@@ -20,11 +20,12 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping()
-    public ResponseEntity<ResponseMessage> createComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CommentRequestDto requestDto,
-                                                         @PathVariable Long postId) {
-
-        Long userId = userDetails.getUser().getId();
+    @ApiOperation(value = "댓글 작성")
+    @PostMapping
+    public ResponseEntity<ResponseMessage> createComment(
+            @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody CommentRequestDto requestDto,
+            @PathVariable Long postId){
 
         CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userDetails.getUser(), postId);
 

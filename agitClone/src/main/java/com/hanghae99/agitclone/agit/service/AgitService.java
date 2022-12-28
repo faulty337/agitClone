@@ -1,16 +1,15 @@
 package com.hanghae99.agitclone.agit.service;
 
 import com.hanghae99.agitclone.agit.dto.AgitInviteRequestDto;
+import com.hanghae99.agitclone.agit.dto.AgitListResponseDto;
 import com.hanghae99.agitclone.agit.dto.AgitMemberResponseDto;
 import com.hanghae99.agitclone.agit.dto.AgitRequestDto;
-import com.hanghae99.agitclone.agit.dto.AgitListResponseDto;
 import com.hanghae99.agitclone.agit.entity.Agit;
 import com.hanghae99.agitclone.agit.entity.AgitMember;
 import com.hanghae99.agitclone.agit.mapper.AgitMapper;
 import com.hanghae99.agitclone.agit.repository.AgitMemberRepository;
 import com.hanghae99.agitclone.agit.repository.AgitRepository;
 import com.hanghae99.agitclone.common.exception.CustomException;
-import com.hanghae99.agitclone.common.exception.ErrorCode;
 import com.hanghae99.agitclone.user.entity.Users;
 import com.hanghae99.agitclone.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,13 +56,6 @@ public class AgitService {
             throw new CustomException(DUPLICATE_MEMBERNAME);
         }
 
-//        //아지트에 이미 초대된 상태인지 확인.(중복체크) 아니면 멤버에 추가.
-//        if(agitMemberRepository.findById(userinfo.getId()).isPresent()){
-//            if(!agitMemberRepository.findById(userinfo.getId()).equals(userinfo.getId())){
-//                throw new CustomException(DUPLICATE_MEMBERNAME);
-//            }
-//        }
-        //아지트에 추가.
         agitMemberRepository.save(agitMapper.toEntity(userinfo.getId(), agitId));
 
     }
@@ -79,13 +71,11 @@ public class AgitService {
             agitIdList.add(agitMember.getAgitId());
         }
 
-        //가지고 나온 agitId를 사용해서 find해서 반환한다.
         List<Agit> agitList = new ArrayList<>();
         for(Long agitId : agitIdList){
             agitList.add(agitRepository.findById(agitId).get());
         }
 
-        //List<Agit> agitList = agitMemberRepository.findAllByUserId(userId);
         List<AgitListResponseDto> agitResponseDtos = new ArrayList<>();
 
         for(Agit agit : agitList){
@@ -95,15 +85,12 @@ public class AgitService {
     }
     //아지트에 가입한 회원 조회
     public List<AgitMemberResponseDto> getMember(Long agitId) {
-        //아지트 userId 빼오기.
         List<AgitMember> agitMemberList = agitMemberRepository.findAllByAgitId(agitId);
         List<Long> userIdList = new ArrayList<>();
         for(AgitMember agitMember : agitMemberList){
             userIdList.add(agitMember.getUserId());
         }
 
-        //userId에 접근해서 이름과 닉네임 가져오기.
-        //findBy는 Optional Null인 경우가 있는가? -> 없다. 아지트 생성 시 무조건 생성한 사람은 들어가 있기 때문.
         List<Users> usersList = new ArrayList<>();
         for(Long userId : userIdList){
             usersList.add(userRepository.findById(userId).get());

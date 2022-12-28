@@ -3,7 +3,6 @@ package com.hanghae99.agitclone.post.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

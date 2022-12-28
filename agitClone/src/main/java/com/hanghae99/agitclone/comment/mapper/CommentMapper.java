@@ -3,9 +3,7 @@ package com.hanghae99.agitclone.comment.mapper;
 import com.hanghae99.agitclone.comment.dto.CommentRequestDto;
 import com.hanghae99.agitclone.comment.dto.CommentResponseDto;
 import com.hanghae99.agitclone.comment.entity.Comment;
-import com.hanghae99.agitclone.post.entity.Post;
 import com.hanghae99.agitclone.user.entity.Users;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Component;
 
 @Component

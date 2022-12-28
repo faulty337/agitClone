@@ -6,14 +6,11 @@ import com.hanghae99.agitclone.common.exception.ErrorCode;
 import com.hanghae99.agitclone.post.dto.PostLikeResponseDto;
 import com.hanghae99.agitclone.post.entity.Post;
 import com.hanghae99.agitclone.post.entity.PostLike;
-import com.hanghae99.agitclone.post.mapper.PostLikeMapper;
 import com.hanghae99.agitclone.post.repository.PostLikeRepository;
 import com.hanghae99.agitclone.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -161,20 +158,24 @@ public class PostLikeService {
             post.updateHateCount(true);
             likeResponseDto.setPostLike(false);
             likeResponseDto.setHateCount(post.getHateCount());
-        }else{
-            if(postLike.getIsHate()){
-                postLikeRepository.delete(postLike);
-                post.updateHateCount(false);
-                likeResponseDto.setPostLike(null);
-                likeResponseDto.setHateCount(post.getHateCount());
-            }else{
-                postLike.updateIsHate(true);
-                post.updateLikeCount(false);
-                post.updateHateCount(true);
-                likeResponseDto.setPostLike(false);
-                likeResponseDto.setHateCount(post.getHateCount());
-            }
+
+            return likeResponseDto;
         }
+
+        if (postLike.getIsHate()) {
+            postLikeRepository.delete(postLike);
+            post.updateHateCount(false);
+            likeResponseDto.setPostLike(null);
+            likeResponseDto.setHateCount(post.getHateCount());
+
+            return likeResponseDto;
+        }
+
+        postLike.updateIsHate(true);
+        post.updateLikeCount(false);
+        post.updateHateCount(true);
+        likeResponseDto.setPostLike(false);
+        likeResponseDto.setHateCount(post.getHateCount());
 
         return likeResponseDto;
 

@@ -8,11 +8,13 @@ import com.hanghae99.agitclone.agit.entity.Agit;
 import com.hanghae99.agitclone.agit.service.AgitService;
 import com.hanghae99.agitclone.common.ResponseMessage;
 import com.hanghae99.agitclone.security.UserDetailsImpl;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 

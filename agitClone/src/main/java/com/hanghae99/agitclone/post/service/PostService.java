@@ -7,7 +7,6 @@ import com.hanghae99.agitclone.agit.repository.AgitRepository;
 import com.hanghae99.agitclone.comment.entity.Comment;
 import com.hanghae99.agitclone.comment.repository.CommentRepository;
 import com.hanghae99.agitclone.common.exception.CustomException;
-import com.hanghae99.agitclone.common.exception.ErrorCode;
 import com.hanghae99.agitclone.post.dto.MainResponseDto;
 import com.hanghae99.agitclone.post.dto.PostRequestDto;
 import com.hanghae99.agitclone.post.dto.PostResponseDto;
