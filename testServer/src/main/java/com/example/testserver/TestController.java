@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.events.Comment;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,14 +50,14 @@ public class TestController {
     }
     @ApiOperation(value = "로그인")
     @PostMapping("user/login")
-    public ResponseEntity<ResponseMessage> login(@RequestBody LoginRequestDto requestDto){
+    public ResponseEntity<ResponseMessage> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response){
         if(!requestDto.getUsername().equals("test1")){
             throw new CustomException(ErrorCode.USERNAME_NOT_FOUND);
         }
         if(!requestDto.getPassword().equals("qwer1234")){
             throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
         }
-
+        response.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VySW5mbyIsImlkIjoidGVzdDEiLCJleHAiOjE2NzIwMzIxMDMsImlhdCI6MTY3MjAyODUwM30.sVdXwe4l5UaOih3PgTUxXxmj76nvz_1xP31-GsAQ08U");
         UserResponseDto userResponseDto = new UserResponseDto("test1", "범준");
         ResponseMessage responseMessage = new ResponseMessage("로그인 성공", 200, userResponseDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
@@ -114,7 +116,8 @@ public class TestController {
             }
             postResponseDtoList.add(new PostResponseDto((long)i, "test1", "범준", "내용"+i, (long)i*3+2, (long)2+i, i%3==0?null:i%3==1, LocalDateTime.now(), i%2==0, commentResponseDtoList, "대충 그럴싸한 경로"));
         }
-        ResponseMessage responseMessage = new ResponseMessage("조회 성공", 200, postResponseDtoList);
+        MainResponseDto mainResponseDto = new MainResponseDto("그럴싸한 게시판", "그럴싸한 게시판입니다.", postResponseDtoList);
+        ResponseMessage responseMessage = new ResponseMessage("조회 성공", 200, mainResponseDto);
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
@@ -223,6 +226,27 @@ public class TestController {
         return new ResponseEntity<>(responseMessage, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "아지트 멤버 조회")
+    @GetMapping("/agit/{agitId}/member")
+    public ResponseEntity<ResponseMessage> getMember(@PathVariable Long agitId){
+        List<UserResponseDto> userResponseDto = new ArrayList<>();
+        for(int i = 1; i <= 5; i++){
+            userResponseDto.add(new UserResponseDto("test"+i, "버"+("어".repeat(i)) + "준"));
+        }
+        ResponseMessage responseMessage = new ResponseMessage("게시물 싫어요 성공", 200, userResponseDto);
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    }
+
+
+    @ApiOperation(value = "토큰 조회")
+    @GetMapping("/token")
+    public ResponseEntity<ResponseMessage> getToken(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        boolean check = token.equals("Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VySW5mbyIsImlkIjoidGVzdDEiLCJleHAiOjE2NzIwMzIxMDMsImlhdCI6MTY3MjAyODUwM30.sVdXwe4l5UaOih3PgTUxXxmj76nvz_1xP31-GsAQ08U");
+        TokenResponseDto tokenResponseDto = new TokenResponseDto(token, check ? "토큰이 일치합니다" : "토큰이 일치하지 않습니다.");
+        ResponseMessage responseMessage = new ResponseMessage("현재 토큰 정보", 200, tokenResponseDto);
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+    }
 
 
 }
