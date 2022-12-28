@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class AgitRequestDto {
-    public String agitname;
-    public String agitinfo;
+    public String agitName;
+    public String agitInfo;
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class AgitResponseDto {
+public class AgitListResponseDto {
     private Long id;
     private String agitname;
 }

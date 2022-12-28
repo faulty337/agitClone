@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ResponsePostDto {
+public class PostResponseDto {
     private Long id;
     private String username;
     private String nickname;

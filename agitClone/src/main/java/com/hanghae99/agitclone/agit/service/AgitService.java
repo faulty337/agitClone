@@ -1,18 +1,16 @@
 package com.hanghae99.agitclone.agit.service;
 
 import com.hanghae99.agitclone.agit.dto.AgitInviteRequestDto;
+import com.hanghae99.agitclone.agit.dto.AgitMemberResponseDto;
 import com.hanghae99.agitclone.agit.dto.AgitRequestDto;
-import com.hanghae99.agitclone.agit.dto.AgitResponseDto;
+import com.hanghae99.agitclone.agit.dto.AgitListResponseDto;
 import com.hanghae99.agitclone.agit.entity.Agit;
 import com.hanghae99.agitclone.agit.entity.AgitMember;
 import com.hanghae99.agitclone.agit.mapper.AgitMapper;
 import com.hanghae99.agitclone.agit.repository.AgitMemberRepository;
 import com.hanghae99.agitclone.agit.repository.AgitRepository;
-import com.hanghae99.agitclone.comment.entity.Comment;
 import com.hanghae99.agitclone.common.exception.CustomException;
 import com.hanghae99.agitclone.common.exception.ErrorCode;
-import com.hanghae99.agitclone.post.dto.ResponsePostDto;
-import com.hanghae99.agitclone.post.entity.Post;
 import com.hanghae99.agitclone.user.entity.Users;
 import com.hanghae99.agitclone.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,24 +45,31 @@ public class AgitService {
         Users userinfo = userRepository.findByUsername(agitInviteRequestDto.getUsername()).orElseThrow(
                 () -> new CustomException(USERNAME_NOT_FOUND)
         );
+
+        Long joinTarget = userinfo.getId();
+
         //아지트 존재하는지 확인
         Agit agit = agitRepository.findById(agitId).orElseThrow(
                 () -> new CustomException(AGIT_NOT_FOUND)
         );
 
-        //아지트에 이미 초대된 상태인지 확인.(중복체크) 아니면 멤버에 추가.
-        if(agitMemberRepository.findById(userinfo.getId()).isPresent()){
-            if(!agitMemberRepository.findById(userinfo.getId()).equals(userinfo.getId())){
-                throw new CustomException(DUPLICATE_MEMBERNAME);
-            }
+        if(agit.getAgitMemberList().stream().anyMatch(agitMember -> agitMember.getUserId().equals(joinTarget))){
+            throw new CustomException(DUPLICATE_MEMBERNAME);
         }
+
+//        //아지트에 이미 초대된 상태인지 확인.(중복체크) 아니면 멤버에 추가.
+//        if(agitMemberRepository.findById(userinfo.getId()).isPresent()){
+//            if(!agitMemberRepository.findById(userinfo.getId()).equals(userinfo.getId())){
+//                throw new CustomException(DUPLICATE_MEMBERNAME);
+//            }
+//        }
         //아지트에 추가.
-        agitMemberRepository.save(agitMapper.toEntity(userId, agitId));
+        agitMemberRepository.save(agitMapper.toEntity(userinfo.getId(), agitId));
 
     }
 
     @Transactional
-    public List<AgitResponseDto> getAgitList(Long userId) {
+    public List<AgitListResponseDto> getAgitList(Long userId) {
 
         //해당 userId가 들어간 모든 아지트를 검색해서 리스트에 넣어야된다.
         //userId로 agitMemberRepository에 접근해서 해당 유저가 가입한 아지트 정보 조회
@@ -81,12 +86,34 @@ public class AgitService {
         }
 
         //List<Agit> agitList = agitMemberRepository.findAllByUserId(userId);
-        List<AgitResponseDto> agitResponseDtos = new ArrayList<>();
+        List<AgitListResponseDto> agitResponseDtos = new ArrayList<>();
 
         for(Agit agit : agitList){
             agitResponseDtos.add(agitMapper.toAgitResponseDto(agit));
         }
         return agitResponseDtos;
+    }
+    //아지트에 가입한 회원 조회
+    public List<AgitMemberResponseDto> getMember(Long agitId) {
+        //아지트 userId 빼오기.
+        List<AgitMember> agitMemberList = agitMemberRepository.findAllByAgitId(agitId);
+        List<Long> userIdList = new ArrayList<>();
+        for(AgitMember agitMember : agitMemberList){
+            userIdList.add(agitMember.getUserId());
+        }
+
+        //userId에 접근해서 이름과 닉네임 가져오기.
+        //findBy는 Optional Null인 경우가 있는가? -> 없다. 아지트 생성 시 무조건 생성한 사람은 들어가 있기 때문.
+        List<Users> usersList = new ArrayList<>();
+        for(Long userId : userIdList){
+            usersList.add(userRepository.findById(userId).get());
+        }
+
+        List<AgitMemberResponseDto> agitMemberResponseDtos = new ArrayList<>();
+        for(Users users : usersList){
+            agitMemberResponseDtos.add(agitMapper.toAgitMemberResponseDto(users));
+        }
+        return agitMemberResponseDtos;
     }
 
 }
