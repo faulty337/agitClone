@@ -60,4 +60,24 @@ public class Post extends TimeStamped {
     }
 
     public void addCommentList(Comment comment){this.commentList.add(comment);}
+
+//    public void updateLikeCount(long likeCount){this.likeCount = likeCount;}
+
+//    public void updateHateCount(long hateCount){this.hateCount = hateCount;}
+
+    public void updateLikeCount(boolean check){
+        if(check){
+            this.likeCount++;
+        }else{
+            this.likeCount--;
+        }
+    }
+
+    public void updateHateCount(boolean check){
+        if(check){
+            this.hateCount++;
+        }else{
+            this.hateCount--;
+        }
+    }
 }
